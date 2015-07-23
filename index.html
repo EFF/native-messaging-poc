@@ -18,10 +18,10 @@
 			<div class="rect5"></div>
 		</div>
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-12">
 				<span>Statut</span>
 				<span class="text-success">Connecté</span>
-				<form class="form">
+				<form id="message-form" class="form">
 					<div class="form-group">
 						<label>Mode de communication</label>
 						<select class="form-control">
@@ -34,10 +34,12 @@
 						<select class="form-control">
 							<option>Application native</option>
 							<option>Application web</option>
+							<option>Les 2</option>
 						</select>
 					</div>
 					<div class="form-group">
-						<textarea class="form-control" rows="3"></textarea>
+						<label>Message</label>
+						<textarea id="message-input" class="form-control" row="3"></textarea>
 					</div>
 					<div class="form-group">						
 						<button class="pull-right btn btn-default">Envoyer</button>
@@ -49,6 +51,6 @@
   </div>
 
   <script src="bower_components/jquery/dist/jquery.min.js"></script>
-  <!-- // <script src="main.js"></script> -->
+  <script src="main.js"></script>
 
 </body>
