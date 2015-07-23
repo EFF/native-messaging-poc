@@ -57,5 +57,5 @@ $(window).load(function(){
 
     $('#messaging-method-select').change(updateMessagingMethodChanged);
     window.addEventListener('online',  updateConnectionStatus);
-      window.addEventListener('offline', updateConnectionStatus);
+    window.addEventListener('offline', updateConnectionStatus);
 });
