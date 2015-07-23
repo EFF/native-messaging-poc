@@ -1,12 +1,13 @@
 {
   // Extension ID: jendailcpkiapenfdmoengnjonghkcap
-  "name": "Hello World!",
-  "description": "My first Chrome App.",
+  "name": "Communication native",
+  "description": "Preuve de concept de communication native",
   "version": "0.1",
   "manifest_version": 2,
   "app": {
     "background": {
-      "scripts": ["background.js"]
+      "scripts": ["eventPage.js"],
+      "persistent" : false
     }
   },
   "permissions": [
