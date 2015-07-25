@@ -1,11 +1,11 @@
-var NATIVE_APP_NAME = "__enter_native_app_name__",
+var NATIVE_APP_NAME = "com.mentum.native.proof",
     MESSAGING_METHODS_MAP = {
     'native' : sendNativeMessage,
     'socket' : sendMessageToSocket
 }
 
 var port,
-    messagingMethod;
+    messagingMethod = 'native';
 
 function onDisconnected () {
     console.log('DISCONNECTED FROM APP');
