@@ -42,7 +42,7 @@
             var handler = this.PropertyChanged;
             if (handler != null)
             {
-                handler(this, new PropertyChangedEventArgs("message"));
+                handler(this, new PropertyChangedEventArgs("Message"));
             }
         }
 
