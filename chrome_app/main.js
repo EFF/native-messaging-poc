@@ -37,7 +37,7 @@ function updateConnectionStatus() {
 function initializeApp () {
     
     var koSecureBindingOptions = {
-       attribute: "data-bind"
+       attribute: "data-bind",
        globals: window,
        bindings: ko.bindingHandlers,
        noVirtualElements: false
