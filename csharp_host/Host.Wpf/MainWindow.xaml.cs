@@ -58,6 +58,12 @@
                 stdin.Read(buffer, 0, 4);
                 var len = BitConverter.ToInt32(buffer, 0);
 
+                if (len == 0)
+                {
+                    stdin.Close();
+                    Environment.Exit(0);
+                }
+
                 // Read the message
                 buffer = new byte[len];
                 stdin.Read(buffer, 0, len);
