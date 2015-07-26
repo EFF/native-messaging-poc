@@ -2,6 +2,8 @@
 {
     using System;
     using System.ComponentModel;
+    using System.IO;
+    using System.Linq;
     using System.Text;
 
     /// <summary>
@@ -56,13 +58,13 @@
 
                 // Read the 4 first bytes to get message length
                 stdin.Read(buffer, 0, 4);
-                var len = BitConverter.ToInt32(buffer, 0);
 
-                if (len == 0)
+                if (ReceivedUnexpectedChromeHeaders(buffer))
                 {
-                    stdin.Close();
-                    Environment.Exit(0);
+                    CleanlyExitNativeApplication(stdin);
                 }
+
+                var len = BitConverter.ToInt32(buffer, 0);
 
                 // Read the message
                 buffer = new byte[len];
@@ -72,6 +74,17 @@
                 this.Message = str;
                 this.worker.ReportProgress(0);
             }
+        }
+
+        private static void CleanlyExitNativeApplication(Stream stdin)
+        {
+            stdin.Close();
+            Environment.Exit(0);
+        }
+
+        private static bool ReceivedUnexpectedChromeHeaders(byte[] buffer)
+        {
+            return buffer == null || buffer.All(x => x == 0);
         }
     }
 }
