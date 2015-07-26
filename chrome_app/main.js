@@ -35,9 +35,17 @@ function updateConnectionStatus() {
 }
 
 function initializeApp () {
+    
+    var koSecureBindingOptions = {
+       attribute: "data-bind"
+       globals: window,
+       bindings: ko.bindingHandlers,
+       noVirtualElements: false
+    };
+    ko.bindingProvider.instance = new ko.secureBindingsProvider(koSecureBindingOptions);
     messaging = new MessagingViewModel();
     ko.applyBindings(messaging);
-    
+
     connectToNativeApp();
     updateConnectionStatus();
 }
