@@ -5,7 +5,7 @@ var NATIVE_APP_NAME = "com.mentum.native.proof",
 }
 
 var port,
-    messagingMethod = 'native';
+    messagingMethod;
 
 function onDisconnected () {
     console.log('DISCONNECTED FROM APP');
