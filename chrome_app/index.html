@@ -20,29 +20,36 @@
 		<div class="row">
 			<div class="col-md-12">
 				<span>Statut</span>
-				<span id="status"></span>
-				<form id="message-form" class="form">
+				<span data-bind="text: connectionStatus.text, css : connectionStatus.className"></span>
+				<form id="message-form" class="form" data-bind="submit: sendMessage">
 					<div class="form-group">
-						<label>Mode de communication</label>
-						<select id="messaging-method-select" class="form-control">
-							<option value="native">Native messaging</option>
-							<option value="socket">Web socket</option>
+						<label>Destination</label>
+						<select class="form-control" 
+							data-bind="options : destinationsAllowedMethods,
+							optionsCaption: 'Choisir une destination..',
+							optionsText: 'name',
+							optionsValue: 'allowedMethodsMap',
+							value: allowedMethods"
+							required>
 						</select>
 					</div>
 					<div class="form-group">
-						<label>Destination</label>
-						<select class="form-control">
-							<option>Application native</option>
-							<option>Application web</option>
-							<option>Les 2</option>
+						<label>Mode de communication</label>
+						<select class="form-control" 
+							data-bind="options : allowedMethods,
+							optionsCaption: 'Choisir un mode de communication...',
+							optionsText: 'name',
+							optionsValue: 'method',
+							value: selectedMessagingMethod"
+							required>
 						</select>
 					</div>
 					<div class="form-group">
 						<label>Message</label>
-						<textarea id="message-input" class="form-control" row="3"></textarea>
+						<textarea id="message-input" class="form-control" row="3" data-bind="value: message" placeholder="Un super message" required></textarea>
 					</div>
 					<div class="form-group">						
-						<button class="pull-right btn btn-default">Envoyer</button>
+						<button type="submit" class="pull-right btn btn-default">Envoyer</button>
 					</div>
 				</form>
 			</div>
@@ -51,6 +58,10 @@
   </div>
 
   <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="bower_components/signalr/jquery.signalR.min.js"></script>
+  <script src="bower_components/knockout/dist/knockout.js"></script>
+  <script src="bower_components/knockout-secure-binding/dist/knockout-secure-binding.min.js"></script>
+
   <script src="main.js"></script>
 
 </body>

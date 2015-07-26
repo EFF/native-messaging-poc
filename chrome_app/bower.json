@@ -18,7 +18,10 @@
     "tests"
   ],
   "dependencies": {
+    "knockout": "~3.3.0",
+    "jquery": "~2.1.4",
     "bootstrap": "~3.3.5",
-    "jquery": "~2.1.4"
+    "signalr": "~2.2.0",
+    "knockout-secure-binding": "~0.5.1"
   }
 }

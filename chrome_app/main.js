@@ -1,11 +1,12 @@
-var NATIVE_APP_NAME = "com.mentum.native.proof",
-    MESSAGING_METHODS_MAP = {
-    'native' : sendNativeMessage,
-    'socket' : sendMessageToSocket
-}
-
 var port,
-    messagingMethod;
+    messaging;
+
+var NATIVE_APP_NAME = "test_native_app",
+    NATIVE_MESSAGING_METHODS = [
+        {name : 'NativeMessaging', method: sendNativeMessage},
+        {name : 'WebSocket', method: sendMessageToSocket}
+    ],
+    CROSS_APP_MESSAGING_METHODS = [{name : 'MessagePassing', method: sendMessageToApp}];
 
 function onDisconnected () {
     console.log('DISCONNECTED FROM APP');
@@ -16,6 +17,10 @@ function connectToNativeApp() {
   port.onDisconnect.addListener(onDisconnected);
 }
 
+function sendMessageToApp (message) {
+    console.log('CROSS APP MESSAGING NOT IMPLEMENTED YET', message)
+}
+
 function sendNativeMessage(message) {
   port.postMessage(message);
 }
@@ -24,38 +29,49 @@ function sendMessageToSocket(message){
     console.log('WEBSOCKET NOT IMPLEMENTED YET', message)
 }
 
-function sendMessage(message){
-    messagingMethod.call(this, message);
-}
-
 function updateConnectionStatus() {
-    var statusElement = $('#status');
-
-    var status = navigator.onLine ? "Connecté" : "Déconnecté";
-    var className = navigator.onLine ? "text-success" : "text-danger";
-
-    statusElement.removeClass();
-    statusElement.text(status);
-    statusElement.addClass(className);
+    messaging.connectionStatus.text(navigator.onLine ? "Connecté" : "Déconnecté");
+    messaging.connectionStatus.className(navigator.onLine ? "text-success" : "text-danger");
 }
 
-function updateMessagingMethodChanged(){
-    var _messagingMethod = $(this).val();
-    messagingMethod = MESSAGING_METHODS_MAP[_messagingMethod];
-}
+function initializeApp () {
+    
+    var koSecureBindingOptions = {
+       attribute: "data-bind",
+       globals: window,
+       bindings: ko.bindingHandlers,
+       noVirtualElements: false
+    };
+    ko.bindingProvider.instance = new ko.secureBindingsProvider(koSecureBindingOptions);
+    messaging = new MessagingViewModel();
+    ko.applyBindings(messaging);
 
-$(window).load(function(){
     connectToNativeApp();
     updateConnectionStatus();
+}
 
-    $('#message-form').submit(function(e){
-        var message = $("#message-input").val()
-        sendMessage(message);
-        
-        e.preventDefault();
-    });
+function MessagingViewModel() {
+    this.destinationsAllowedMethods = [
+        {name : 'Application native', allowedMethodsMap: NATIVE_MESSAGING_METHODS},
+        {name : 'Application web', allowedMethodsMap: CROSS_APP_MESSAGING_METHODS}
+    ];
+    this.allowedMethods = ko.observable();
+    this.selectedMessagingMethod = ko.observable();
+    this.message = '';
+    this.connectionStatus = {
+        text : ko.observable(),
+        className: ko.observable()
+    };
 
-    $('#messaging-method-select').change(updateMessagingMethodChanged);
+    this.sendMessage = function (){
+        var messagingMethod = this.selectedMessagingMethod()
+        messagingMethod.call(this, this.message);
+    }
+}  
+
+$(window).load(function()   {    
+    initializeApp();
+
     window.addEventListener('online',  updateConnectionStatus);
     window.addEventListener('offline', updateConnectionStatus);
 });
