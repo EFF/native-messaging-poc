@@ -3,5 +3,5 @@
   "description": "Communicates with WPF Host",
   "path": "Host.Wpf.exe",
   "type": "stdio",
-  "allowed_origins": ["chrome-extension://jgndgjhmedmchalkmchahbndmdachghp/"]
+  "allowed_origins": ["chrome-extension://llhagecianojmkmakcicenmhhgglkgih/"]
 }
