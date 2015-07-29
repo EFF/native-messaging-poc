@@ -11,6 +11,10 @@
     }
   },
   "permissions": [
-    "nativeMessaging"
-  ]
+    "nativeMessaging",
+    "socket"
+  ],
+  "sockets": {
+    "tcp": {"connect" : "127.0.0.1"}
+    }
 }
