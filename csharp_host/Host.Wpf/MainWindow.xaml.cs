@@ -6,6 +6,8 @@
     using System.Linq;
     using System.Text;
 
+    using Microsoft.Owin.Hosting;
+
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
     /// </summary>
@@ -25,6 +27,8 @@
             this.worker.RunWorkerAsync();
 
             this.PropertyChanged += this.ShowWindow;
+            var webapp = WebApp.Start<Startup>("http://localhost:8085/");
+            
         }
 
         private void ShowWindow(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
