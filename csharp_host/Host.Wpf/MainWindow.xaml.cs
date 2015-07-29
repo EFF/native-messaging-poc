@@ -6,7 +6,10 @@
     using System.Linq;
     using System.Text;
 
+    using CommonServiceLocator.NinjectAdapter.Unofficial;
+
     using Microsoft.Owin.Hosting;
+    using Microsoft.Practices.ServiceLocation;
 
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
@@ -18,7 +21,8 @@
         public MainWindow()
         {
             this.InitializeComponent();
-            
+            this.SetupDependencyContainer();
+
             this.DataContext = this;
 
             this.worker = new BackgroundWorker { WorkerReportsProgress = true };
@@ -27,8 +31,22 @@
             this.worker.RunWorkerAsync();
 
             this.PropertyChanged += this.ShowWindow;
-            var webapp = WebApp.Start<Startup>("http://localhost:8085/");
-            
+
+            WebApp.Start<Startup>("http://localhost:8085/");
+        }
+
+        private void SetupDependencyContainer()
+        {
+            var kernel = new Ninject.StandardKernel();
+            var serviceLocator = new NinjectServiceLocator(kernel);
+            ServiceLocator.SetLocatorProvider(() => serviceLocator);
+            kernel.Bind<Action<string>>().ToMethod(c => this.SetMessage);
+        }
+
+        private void SetMessage(string value)
+        {
+            this.Message = value;
+            this.worker.ReportProgress(0);
         }
 
         private void ShowWindow(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -75,7 +93,7 @@
                 stdin.Read(buffer, 0, len);
                 var str = Encoding.UTF8.GetString(buffer);
 
-                this.Message = str;
+                this.Message = "Native: " + str;
                 this.worker.ReportProgress(0);
             }
         }
