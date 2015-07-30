@@ -1,6 +1,6 @@
 {
-  "name": "Chrome receiver",
-  "description": "Application Chrome qui reçoit des messages",
+  "name": "Receiver app",
+  "description": "Webb app qui reçoit des messages",
   "version": "0.1",
   "manifest_version": 2,
   "app": {
@@ -10,8 +10,5 @@
   },
   "externally_connectable": {
     "ids" : ["*"]
-  },
-  "permissions": [
-    "nativeMessaging"
-  ]
+  }
 }
