@@ -17,12 +17,17 @@ function onDisconnected () {
 }
 
 function connectToNativeApp() {
-  nativePort = chrome.runtime.connectNative(NATIVE_APP_NAME);
-  nativePort.onDisconnect.addListener(onDisconnected);
+    nativePort = chrome.runtime.connectNative(NATIVE_APP_NAME);
+    nativePort.onDisconnect.addListener(onDisconnected);
+    nativePort.onMessage.addListener(onNativeMessage);
 }
 
 function sendNativeMessage(message) {
   nativePort.postMessage(message);
+}
+
+function onNativeMessage (message) {
+    viewModel.inBoundMessage(message);
 }
 
 // CROSS APP MESSAGE PASING
@@ -63,6 +68,7 @@ function MessagingViewModel() {
         text : ko.observable(),
         className: ko.observable()
     };
+    this.inBoundMessage = ko.observable();
 
     this.sendMessage = function (){
         var messagingMethod = this.selectedMessagingMethod()
