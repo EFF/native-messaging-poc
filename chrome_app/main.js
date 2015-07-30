@@ -1,8 +1,9 @@
-var port,
-    nativeMessaging,
+var nativePort,
+    viewModel,
     websocketConnection;
 
 var NATIVE_APP_NAME = "com.mentum.native.proof",
+    WEB_RECEIVER_APP_ID = "hmicbhcbfohplllmheflpledfgllklnl",
     SOCKET_URI = 'http://localhost:8085/connection',
     NATIVE_MESSAGING_METHODS = [
         {name : 'NativeMessaging', method: sendNativeMessage},
@@ -16,17 +17,17 @@ function onDisconnected () {
 }
 
 function connectToNativeApp() {
-  port = chrome.runtime.connectNative(NATIVE_APP_NAME);
-  port.onDisconnect.addListener(onDisconnected);
+  nativePort = chrome.runtime.connectNative(NATIVE_APP_NAME);
+  nativePort.onDisconnect.addListener(onDisconnected);
 }
 
 function sendNativeMessage(message) {
-  port.postMessage(message);
+  nativePort.postMessage(message);
 }
 
 // CROSS APP MESSAGE PASING
 function sendMessageToApp (message) {
-    console.warn('CROSS APP MESSAGING NOT IMPLEMENTED YET', message)
+    chrome.runtime.sendMessage(WEB_RECEIVER_APP_ID, message);
 }
 
 // WEBSOCKET
@@ -46,8 +47,8 @@ function sendMessageToSocket(message){
 
 // NETWORK CONNECTION
 function updateNetworkConnectionStatus() {
-    nativeMessaging.connectionStatus.text(navigator.onLine ? "Connecté" : "Déconnecté");
-    nativeMessaging.connectionStatus.className(navigator.onLine ? "text-success" : "text-danger");
+    viewModel.connectionStatus.text(navigator.onLine ? "Connecté" : "Déconnecté");
+    viewModel.connectionStatus.className(navigator.onLine ? "text-success" : "text-danger");
 }
 
 function MessagingViewModel() {
@@ -57,7 +58,7 @@ function MessagingViewModel() {
     ];
     this.allowedMethods = ko.observable();
     this.selectedMessagingMethod = ko.observable();
-    this.message = '';
+    this.message = ko.observable();
     this.connectionStatus = {
         text : ko.observable(),
         className: ko.observable()
@@ -65,7 +66,8 @@ function MessagingViewModel() {
 
     this.sendMessage = function (){
         var messagingMethod = this.selectedMessagingMethod()
-        messagingMethod.call(this, this.message);
+        messagingMethod.call(this, this.message());
+        this.message('');
     }
 }
 
@@ -78,15 +80,14 @@ function initializeViewModel () {
     };
 
     ko.bindingProvider.instance = new ko.secureBindingsProvider(koSecureBindingOptions);
-    nativeMessaging = new MessagingViewModel();
-    ko.applyBindings(nativeMessaging);
+    viewModel = new MessagingViewModel();
+    ko.applyBindings(viewModel);
 }
 
 function initializeApp () {
-    initializeViewModel()
+    initializeViewModel();
     connectToNativeApp();
     connectToSocket();
-
     updateNetworkConnectionStatus();
 }
 
