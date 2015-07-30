@@ -8,8 +8,11 @@
 
     using CommonServiceLocator.NinjectAdapter.Unofficial;
 
+    using Microsoft.AspNet.SignalR;
     using Microsoft.Owin.Hosting;
     using Microsoft.Practices.ServiceLocation;
+
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
@@ -115,6 +118,38 @@
         private static bool ReceivedUnexpectedChromeHeaders(byte[] buffer)
         {
             return buffer == null || buffer.All(x => x == 0);
+        }
+
+        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var connection = GlobalHost.ConnectionManager.GetConnectionContext<Connection>();
+            connection.Connection.Broadcast(this.JsonMessage);
+        }
+
+        private void Button_Click_1(object sender, System.Windows.RoutedEventArgs e)
+        {
+            var json = this.JsonMessage;
+            var bytes = Encoding.UTF8.GetBytes(json.ToString());
+
+            var stdout = Console.OpenStandardOutput();
+            
+            stdout.WriteByte((byte)((bytes.Length >> 0) & 0xFF));
+            stdout.WriteByte((byte)((bytes.Length >> 8) & 0xFF));
+            stdout.WriteByte((byte)((bytes.Length >> 16) & 0xFF));
+            stdout.WriteByte((byte)((bytes.Length >> 24) & 0xFF));
+
+            stdout.Write(bytes, 0, bytes.Length);
+            stdout.Flush();
+        }
+
+        private JObject JsonMessage
+        {
+            get
+            {
+                var json = new JObject();
+                json["data"] = this.Message;
+                return json;
+            }
         }
     }
 }
