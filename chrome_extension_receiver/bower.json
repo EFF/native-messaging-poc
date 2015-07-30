@@ -1,0 +1,25 @@
+{
+  "name": "receiver app",
+  "version": "0.0.0",
+  "authors": [
+    "eff <frxpoulin@gmail.com>"
+  ],
+  "main": "index.html",
+  "moduleType": [
+    "es6"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "knockout": "~3.3.0",
+    "bootstrap": "~3.3.5",
+    "knockout-secure-binding": "~0.5.1"
+  }
+}
