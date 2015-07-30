@@ -19,14 +19,14 @@ function onDisconnected () {
 function connectToNativeApp() {
     nativePort = chrome.runtime.connectNative(NATIVE_APP_NAME);
     nativePort.onDisconnect.addListener(onDisconnected);
-    nativePort.onMessage.addListener(onNativeMessage);
+    nativePort.onMessage.addListener(onMessageFromNative);
 }
 
 function sendNativeMessage(message) {
   nativePort.postMessage(message);
 }
 
-function onNativeMessage (message) {
+function onMessageFromNative (message) {
     viewModel.inBoundMessage(message.data);
 }
 
@@ -40,6 +40,7 @@ function connectToSocket () {
     websocketConnection = $.connection(SOCKET_URI)
     websocketConnection.start();
     websocketConnection.error(socketError);
+    websocketConnection.received(onMessageFromNative)
 }
 
 function socketError (error){
