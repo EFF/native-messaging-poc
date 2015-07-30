@@ -1,0 +1,27 @@
+{
+  "name": "poc_comm_bidirectionnelle",
+  "version": "0.0.0",
+  "authors": [
+    "eff <frxpoulin@gmail.com>"
+  ],
+  "main": "index.html",
+  "moduleType": [
+    "es6"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "knockout": "~3.3.0",
+    "jquery": "~2.1.4",
+    "bootstrap": "~3.3.5",
+    "signalr": "~2.2.0",
+    "knockout-secure-binding": "~0.5.1"
+  }
+}
