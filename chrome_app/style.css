@@ -47,6 +47,10 @@
   animation-delay: -0.8s;
 }
 
+.top {
+  margin-top: 100px;
+}
+
 @keyframes sk-stretchdelay {
   0%, 40%, 100% { 
     transform: translateY(8px);
