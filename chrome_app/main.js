@@ -27,7 +27,7 @@ function sendNativeMessage(message) {
 }
 
 function onNativeMessage (message) {
-    viewModel.inBoundMessage(message);
+    viewModel.inBoundMessage(message.data);
 }
 
 // CROSS APP MESSAGE PASING
