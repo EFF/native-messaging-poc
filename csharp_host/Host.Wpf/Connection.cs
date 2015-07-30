@@ -12,7 +12,6 @@
         {
             var messageSetter = ServiceLocator.Current.GetInstance<Action<string>>();
             messageSetter("Socket: " + data);
-
             return base.OnReceived(request, connectionId, data);
         }
     }
