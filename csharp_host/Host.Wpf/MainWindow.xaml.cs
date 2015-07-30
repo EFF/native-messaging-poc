@@ -6,6 +6,11 @@
     using System.Linq;
     using System.Text;
 
+    using CommonServiceLocator.NinjectAdapter.Unofficial;
+
+    using Microsoft.Owin.Hosting;
+    using Microsoft.Practices.ServiceLocation;
+
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
     /// </summary>
@@ -16,7 +21,8 @@
         public MainWindow()
         {
             this.InitializeComponent();
-            
+            this.SetupDependencyContainer();
+
             this.DataContext = this;
 
             this.worker = new BackgroundWorker { WorkerReportsProgress = true };
@@ -25,6 +31,22 @@
             this.worker.RunWorkerAsync();
 
             this.PropertyChanged += this.ShowWindow;
+
+            WebApp.Start<Startup>("http://localhost:8085/");
+        }
+
+        private void SetupDependencyContainer()
+        {
+            var kernel = new Ninject.StandardKernel();
+            var serviceLocator = new NinjectServiceLocator(kernel);
+            ServiceLocator.SetLocatorProvider(() => serviceLocator);
+            kernel.Bind<Action<string>>().ToMethod(c => this.SetMessage);
+        }
+
+        private void SetMessage(string value)
+        {
+            this.Message = value;
+            this.worker.ReportProgress(0);
         }
 
         private void ShowWindow(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
@@ -55,25 +77,33 @@
             while (true)
             {
                 var buffer = new byte[4];
+                var len = ReadMessageLength(stdin, buffer);
+                var str = ReadNativeMessage(len, stdin);
 
-                // Read the 4 first bytes to get message length
-                stdin.Read(buffer, 0, 4);
-
-                if (ReceivedUnexpectedChromeHeaders(buffer))
-                {
-                    CleanlyExitNativeApplication(stdin);
-                }
-
-                var len = BitConverter.ToInt32(buffer, 0);
-
-                // Read the message
-                buffer = new byte[len];
-                stdin.Read(buffer, 0, len);
-                var str = Encoding.UTF8.GetString(buffer);
-
-                this.Message = str;
+                this.Message = "Native: " + str;
                 this.worker.ReportProgress(0);
             }
+        }
+
+        private static int ReadMessageLength(Stream stdin, byte[] buffer)
+        {
+            stdin.Read(buffer, 0, 4);
+
+            if (ReceivedUnexpectedChromeHeaders(buffer))
+            {
+                CleanlyExitNativeApplication(stdin);
+            }
+
+            var len = BitConverter.ToInt32(buffer, 0);
+            return len;
+        }
+
+        private static string ReadNativeMessage(int len, Stream stdin)
+        {
+            var buffer = new byte[len];
+            stdin.Read(buffer, 0, len);
+            var str = Encoding.UTF8.GetString(buffer);
+            return str;
         }
 
         private static void CleanlyExitNativeApplication(Stream stdin)

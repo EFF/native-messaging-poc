@@ -10,11 +10,10 @@
       "persistent" : false
     }
   },
+    "sockets": {
+    "tcp": {"connect" : "127.0.0.1:8085"}
+    },
   "permissions": [
-    "nativeMessaging",
-    "socket"
-  ],
-  "sockets": {
-    "tcp": {"connect" : "127.0.0.1"}
-    }
+    "nativeMessaging"
+  ]
 }

@@ -2,8 +2,8 @@ var port,
     nativeMessaging,
     websocketConnection;
 
-var NATIVE_APP_NAME = "test_native_app",
-    SOCKET_URI = '/hello',
+var NATIVE_APP_NAME = "com.mentum.native.proof",
+    SOCKET_URI = 'http://localhost:8085/connection',
     NATIVE_MESSAGING_METHODS = [
         {name : 'NativeMessaging', method: sendNativeMessage},
         {name : 'WebSocket', method: sendMessageToSocket}
