@@ -19,7 +19,7 @@
     /// </summary>
     public partial class MainWindow : INotifyPropertyChanged
     {
-        private BackgroundWorker worker;
+        private readonly BackgroundWorker worker;
 
         public MainWindow()
         {
@@ -120,13 +120,13 @@
             return buffer == null || buffer.All(x => x == 0);
         }
 
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void SocketSendClick(object sender, System.Windows.RoutedEventArgs e)
         {
             var connection = GlobalHost.ConnectionManager.GetConnectionContext<Connection>();
             connection.Connection.Broadcast(this.JsonMessage);
         }
 
-        private void Button_Click_1(object sender, System.Windows.RoutedEventArgs e)
+        private void NativeSendClick(object sender, System.Windows.RoutedEventArgs e)
         {
             var json = this.JsonMessage;
             var bytes = Encoding.UTF8.GetBytes(json.ToString());
