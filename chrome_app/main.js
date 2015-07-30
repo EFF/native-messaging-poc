@@ -1,5 +1,5 @@
 var nativePort,
-    messaging,
+    viewModel,
     websocketConnection;
 
 var NATIVE_APP_NAME = "com.mentum.native.proof",
@@ -47,8 +47,8 @@ function sendMessageToSocket(message){
 
 // NETWORK CONNECTION
 function updateNetworkConnectionStatus() {
-    messaging.connectionStatus.text(navigator.onLine ? "Connecté" : "Déconnecté");
-    messaging.connectionStatus.className(navigator.onLine ? "text-success" : "text-danger");
+    viewModel.connectionStatus.text(navigator.onLine ? "Connecté" : "Déconnecté");
+    viewModel.connectionStatus.className(navigator.onLine ? "text-success" : "text-danger");
 }
 
 function MessagingViewModel() {
@@ -80,8 +80,8 @@ function initializeViewModel () {
     };
 
     ko.bindingProvider.instance = new ko.secureBindingsProvider(koSecureBindingOptions);
-    messaging = new MessagingViewModel();
-    ko.applyBindings(messaging);
+    viewModel = new MessagingViewModel();
+    ko.applyBindings(viewModel);
 }
 
 function initializeApp () {
