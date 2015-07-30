@@ -77,25 +77,33 @@
             while (true)
             {
                 var buffer = new byte[4];
-
-                // Read the 4 first bytes to get message length
-                stdin.Read(buffer, 0, 4);
-
-                if (ReceivedUnexpectedChromeHeaders(buffer))
-                {
-                    CleanlyExitNativeApplication(stdin);
-                }
-
-                var len = BitConverter.ToInt32(buffer, 0);
-
-                // Read the message
-                buffer = new byte[len];
-                stdin.Read(buffer, 0, len);
-                var str = Encoding.UTF8.GetString(buffer);
+                var len = ReadMessageLength(stdin, buffer);
+                var str = ReadNativeMessage(len, stdin);
 
                 this.Message = "Native: " + str;
                 this.worker.ReportProgress(0);
             }
+        }
+
+        private static int ReadMessageLength(Stream stdin, byte[] buffer)
+        {
+            stdin.Read(buffer, 0, 4);
+
+            if (ReceivedUnexpectedChromeHeaders(buffer))
+            {
+                CleanlyExitNativeApplication(stdin);
+            }
+
+            var len = BitConverter.ToInt32(buffer, 0);
+            return len;
+        }
+
+        private static string ReadNativeMessage(int len, Stream stdin)
+        {
+            var buffer = new byte[len];
+            stdin.Read(buffer, 0, len);
+            var str = Encoding.UTF8.GetString(buffer);
+            return str;
         }
 
         private static void CleanlyExitNativeApplication(Stream stdin)
