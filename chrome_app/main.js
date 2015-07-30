@@ -12,38 +12,42 @@ var NATIVE_APP_NAME = "com.mentum.native.proof",
     CROSS_APP_MESSAGING_METHODS = [{name : 'MessagePassing', method: sendMessageToApp}];
 
 // NATIVE MESSAGING
-function onDisconnected () {
+function onDisconnected() {
     console.log('DISCONNECTED FROM APP');
 }
 
 function connectToNativeApp() {
     nativePort = chrome.runtime.connectNative(NATIVE_APP_NAME);
     nativePort.onDisconnect.addListener(onDisconnected);
-    nativePort.onMessage.addListener(onMessageFromNative);
+    nativePort.onMessage.addListener(onMessageFromHost);
 }
 
 function sendNativeMessage(message) {
   nativePort.postMessage(message);
 }
 
-function onMessageFromNative (message) {
-    viewModel.inBoundMessage(message.data);
+function onMessageFromHost(message) {
+    viewModel.inboundMessage('native:' + message.data);
 }
 
 // CROSS APP MESSAGE PASING
-function sendMessageToApp (message) {
+function sendMessageToApp(message) {
     chrome.runtime.sendMessage(WEB_RECEIVER_APP_ID, message);
 }
 
 // WEBSOCKET
 function connectToSocket () {
-    websocketConnection = $.connection(SOCKET_URI)
+    websocketConnection = $.connection(SOCKET_URI);
     websocketConnection.start();
     websocketConnection.error(socketError);
-    websocketConnection.received(onMessageFromNative)
+    websocketConnection.received(onSocketMessage);
 }
 
-function socketError (error){
+function onSocketMessage(message) {
+    viewModel.inboundMessage('socket:' + message.data);
+}
+
+function socketError(error){
     console.warn('Error in socket connection', error);
 }
 
@@ -69,16 +73,16 @@ function MessagingViewModel() {
         text : ko.observable(),
         className: ko.observable()
     };
-    this.inBoundMessage = ko.observable();
+    this.inboundMessage = ko.observable();
 
-    this.sendMessage = function (){
+    this.sendMessage = function(){
         var messagingMethod = this.selectedMessagingMethod()
         messagingMethod.call(this, this.message());
         this.message('');
     }
 }
 
-function initializeViewModel () {
+function initializeViewModel() {
     var koSecureBindingOptions = {
        attribute: "data-bind",
        globals: window, 
@@ -91,14 +95,14 @@ function initializeViewModel () {
     ko.applyBindings(viewModel);
 }
 
-function initializeApp () {
+function initializeApp() {
     initializeViewModel();
     connectToNativeApp();
     connectToSocket();
     updateNetworkConnectionStatus();
 }
 
-$(window).load(function()   {    
+$(function() {    
     initializeApp();
 
     window.addEventListener('online',  updateNetworkConnectionStatus);
