@@ -12,7 +12,7 @@ var NATIVE_APP_NAME = "com.mentum.native.proof",
     CROSS_APP_MESSAGING_METHODS = [{name : 'MessagePassing', method: sendMessageToApp}];
 
 // NATIVE MESSAGING
-function onDisconnected () {
+function onDisconnected() {
     console.log('DISCONNECTED FROM APP');
 }
 
@@ -26,12 +26,12 @@ function sendNativeMessage(message) {
   nativePort.postMessage(message);
 }
 
-function onMessageFromHost (message) {
+function onMessageFromHost(message) {
     viewModel.inboundMessage('native:' + message.data);
 }
 
 // CROSS APP MESSAGE PASING
-function sendMessageToApp (message) {
+function sendMessageToApp(message) {
     chrome.runtime.sendMessage(WEB_RECEIVER_APP_ID, message);
 }
 
@@ -43,11 +43,11 @@ function connectToSocket () {
     websocketConnection.received(onSocketMessage);
 }
 
-function onSocketMessage (message) {
+function onSocketMessage(message) {
     viewModel.inboundMessage('socket:' + message.data);
 }
 
-function socketError (error){
+function socketError(error){
     console.warn('Error in socket connection', error);
 }
 
@@ -75,14 +75,14 @@ function MessagingViewModel() {
     };
     this.inboundMessage = ko.observable();
 
-    this.sendMessage = function (){
+    this.sendMessage = function(){
         var messagingMethod = this.selectedMessagingMethod()
         messagingMethod.call(this, this.message());
         this.message('');
     }
 }
 
-function initializeViewModel () {
+function initializeViewModel() {
     var koSecureBindingOptions = {
        attribute: "data-bind",
        globals: window, 
@@ -95,14 +95,14 @@ function initializeViewModel () {
     ko.applyBindings(viewModel);
 }
 
-function initializeApp () {
+function initializeApp() {
     initializeViewModel();
     connectToNativeApp();
     connectToSocket();
     updateNetworkConnectionStatus();
 }
 
-$(window).load(function()   {    
+$(function() {    
     initializeApp();
 
     window.addEventListener('online',  updateNetworkConnectionStatus);
